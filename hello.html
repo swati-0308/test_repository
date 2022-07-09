@@ -29,64 +29,56 @@
         <section>
             <h1>Create Employee</h1>
             <div class="formdetails">
-                <form id="FORM" name="f1">
-                    <div style="padding-left:20px">
+                <form id="FORM" name="f1" onsubmit = emailvalidation(document.f1.t1)>
+                    <div style ="padding-left:20px">
                         <div class="form-item">
-                            <label>Employee Name</label><br>
-                            <input type="text" placeholder="Employee Name">
+                            <label for="employeename">Employee Name</label><br>
+                            <input type="text" id="employeename" placeholder="Employee Name">
                         </div>
                         <div class="form-item">
-                            <label>Role</label><br>
-                            <select>
+                            <label for="role">Role</label><br>
+                            <select id="role">
                                 <option>Developer</option>
                                 <option>QA Engineer></option>
                                 <option>UI/UX Engineer></option>
                             </select>
                         </div>
                         <div class="form-item">
-                            <label>Address</label><br>
-                            <input type="text" placeholder="Address">
+                            <label for="address">Address</label><br>
+                            <input type="text" id="address" placeholder="Address">
                         </div>
-                        <!-- Change color of Create button to grey on clicking -->
-                        <button id="button1"onclick =func()>Create</button> 
-
-                        <!-- //Debounce -->
-                        <!-- <button id="button1" onclick =a()>Create</button>  
-                            
-                        //Email validation
-                        <button id="button1" onclick = emailvalidation(document.f1.t1)>Create</button> --> 
-
+                        <button id="button1" type="submit">Create</button>  
                         <button id="button2">Cancel</button>
                     </div>
                     <div style="padding-left:80px">
                         <div class="form-item">
-                            <label>Employee ID</label><br>
-                            <input type="text" placeholder="Employee ID">
+                            <label for="employeeid">Employee ID</label><br>
+                            <input type="text" id="employeeid" placeholder="Employee ID">
                         </div>
                         <div class="form-item">
-                            <label>Status</label><br>
-                            <select>
+                            <label for="status">Status</label><br>
+                            <select id="status">
                                 <option>Active</option>
                                 <option>Inactive</option>
                             </select>
                         </div>
                         <div class="form-item">
-                            <label>Email Id</label><br>
-                            <input type="text" name="t1" placeholder="Email id">
+                            <label for="email">Email Id</label><br>
+                            <input type="text" name="t1" id="email" placeholder="Email id">
                         </div>
                     </div>
                     <div style="padding-left:80px">
                         <div class="form-item">
-                            <label>Joining Date</label><br>
-                            <input type="text" placeholder="Joining Date">
+                            <label for="jdate">Joining Date</label><br>
+                            <input type="date" id="jdate" placeholder="Joining Date">
                         </div> 
                         <div class="form-item">
-                            <label>Experience</label><br>
-                            <input type="text" placeholder="Experience">
+                            <label for="exp">Experience</label><br>
+                            <input type="text" id="exp" placeholder="Experience">
                         </div>  
                         <div class="form-item">
-                        <label>Upload ID Proof</label><br>
-                            <input type="text" placeholder="Choose File">
+                        <label for="idp">Upload ID Proof</label><br>
+                            <input type="file" id="idp" placeholder="Choose File">
                         </div>
                     </div>
                 </form>
@@ -94,46 +86,40 @@
         </section>
     </main>
     <script>
-        document.getElementById('FORM').addEventListener('button1', (e) => 
-        {   e.preventDefault();
-            const formData = new FormData(e.target);
-            const data = Array.from(formData.entries()).reduce((memo, [key, value]) => ({
-            ...memo,
-            [key]: value,
-            }), {});
-            str = JSON.stringify(data);
-            console.log(str);
-        });
-        function emailvalidation(input) {
+        function emailvalidation() {
+            var input=document.f1.t1;
             var re = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-            if (input.value.match(re)) {
-                alert("Email id is valid")
+            if (!input.value.match(re)) {
+                alert("Invalid email id")
                 document.f1.t1.focus();
-                return true;
             }
-            else {
-                alert("Invalid email id!");
-                document.f1.t1.focus();
-                return false;
+        let tag = document.getElementsByTagName('label')
+        let employeedet= {}
+        for (let i=0; i<tag.length;i++){
+            employeedet[tag[i].innerHTML] = document.getElementById(tag[i].htmlFor).value
+            document.getElementById(tag[i].htmlFor).value=""
+            console.log(tag[i].innerHTML, ":", document.getElementById(tag[i].htmlFor).value)
         }
+        console.log(employeedet);
+        document.getElementById('button1').style.backgroundColor='gray'
     }
-        function func()
-        {
-            document.getElementById("button1").style.backgroundColor = "grey";
-        }
-        function debounce(func, timeout = 200){
+        
+        const debounce = function(func, timeout=2000){
             let timer;
-            return (...args) => {
+            console.log('hello')
+            return function () {
+                const current = this  
+                const args = arguments
+                console.log('hello1')
                 clearTimeout(timer);
-                timer = setTimeout(() => { func.apply(this, args); }, timeout);
-            };
+                timer = setTimeout(() => func.apply(current, args), timeout);
+            }
         }
-        function func1(){
-            alert("Delayed by 2s")
-        }
-        const a= debounce(() => func1());
+        const change = debounce(emailvalidation);
+        document.getElementById('button1').addEventListener('click', (e)=>{e.preventDefault(); change()})
 
     </script>
 </body>
 
 </html>
+
